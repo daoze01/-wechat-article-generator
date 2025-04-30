@@ -3,7 +3,11 @@ import type { NextRequest } from 'next/server';
 import axios from 'axios';
 
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
-const DEEPSEEK_API_KEY = process.env.NEXT_PUBLIC_DEEPSEEK_API_KEY;
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
+
+if (!DEEPSEEK_API_KEY) {
+  console.error('环境变量 DEEPSEEK_API_KEY 未设置');
+}
 
 // 备用的文章模板
 const ARTICLE_TEMPLATE = {
