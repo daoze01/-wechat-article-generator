@@ -1,3 +1,65 @@
+# AI文章生成器 v1.0
+
+一个基于Next.js和DeepSeek API开发的公众号文章生成工具。
+
+## 功能特点
+
+- 支持多个文章领域的内容生成
+- 智能分析标题，生成相关内容
+- 结构化的文章输出
+- 响应式设计，支持移动端访问
+
+## 技术栈
+
+- Next.js 14
+- React 18
+- Tailwind CSS
+- DeepSeek API
+
+## 环境要求
+
+- Node.js 18+
+- DeepSeek API Key
+
+## 本地开发
+
+1. 克隆项目
+```bash
+git clone [项目地址]
+```
+
+2. 安装依赖
+```bash
+npm install
+```
+
+3. 配置环境变量
+创建 `.env.local` 文件并添加：
+```
+NEXT_PUBLIC_DEEPSEEK_API_KEY=your_api_key_here
+```
+
+4. 启动开发服务器
+```bash
+npm run dev
+```
+
+## 部署
+
+项目可以直接部署到Vercel平台：
+
+1. 在Vercel上导入项目
+2. 配置环境变量
+3. 部署
+
+## 版本历史
+
+### v1.0 (2024-03-21)
+- 初始版本发布
+- 支持基本的文章生成功能
+- 多领域支持
+- 响应式UI设计
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
