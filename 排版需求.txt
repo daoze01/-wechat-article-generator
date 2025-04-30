@@ -1,0 +1,70 @@
+文件名：components/ArticlePreview.tsx
+
+说明：这是用于 Next.js + Tailwind CSS 项目的公众号爆文排版组件，包含渲染与复制按钮功能。
+
+代码如下：
+------------------------------------------------------------
+
+import { useRef } from "react";
+
+export default function ArticlePreview({ content }: { content: string }) {
+  const articleRef = useRef<HTMLDivElement>(null);
+
+  const handleCopy = async () => {
+    if (articleRef.current) {
+      try {
+        await navigator.clipboard.writeText(articleRef.current.innerHTML);
+        alert("文章 HTML 已复制，可粘贴到微信公众号编辑器！");
+      } catch (err) {
+        alert("复制失败，请手动复制");
+      }
+    }
+  };
+
+  return (
+    <div className="relative w-full max-w-3xl mx-auto px-4 py-6 bg-white shadow-xl rounded-2xl border border-gray-200">
+      <button
+        onClick={handleCopy}
+        className="absolute top-4 right-4 bg-blue-600 text-white px-4 py-1 rounded-lg text-sm hover:bg-blue-700 transition"
+      >
+        复制全文
+      </button>
+
+      <div
+        ref={articleRef}
+        className="prose prose-lg max-w-none leading-8 text-gray-800"
+        dangerouslySetInnerHTML={{ __html: content }}
+      />
+    </div>
+  );
+}
+
+------------------------------------------------------------
+
+使用方法参考：
+
+import ArticlePreview from "@/components/ArticlePreview";
+
+const htmlContent = \`
+<h2>孩子成绩退步后，父母第一句话很关键！</h2>
+<p>“成绩退步不怕，怕的是父母的第一句话。”</p>
+<p><strong>今天我们聊聊：家长如何科学面对孩子的‘失败’？</strong></p>
+<hr />
+<h3>📍 为什么孩子成绩会突然下滑？</h3>
+<p>其实，成绩下滑往往不是孩子不努力，而是背后隐藏了更深层的情绪或学习方法问题。</p>
+...\`;
+
+export default function PreviewPage() {
+  return (
+    <main className="min-h-screen bg-gray-50 py-8">
+      <ArticlePreview content={htmlContent} />
+    </main>
+  );
+}
+
+------------------------------------------------------------
+
+建议扩展功能（可交由 CURSOR 实现）：
+- 支持 Markdown -> HTML 自动转换
+- 增加导出 .html 按钮
+- 多种排版风格切换

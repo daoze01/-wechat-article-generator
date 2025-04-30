@@ -1,53 +1,9 @@
 'use client';
 
 import React, { useState, FormEvent, ChangeEvent } from 'react';
-
-// 定义所有可选的文章领域
-const ARTICLE_FIELDS = [
-  '全部',
-  '小绿书',
-  '科技',
-  '职场',
-  '情感',
-  '影视',
-  '军事国际',
-  '星座命理',
-  '娱乐',
-  '财经',
-  '资讯热点',
-  '文化',
-  '美食',
-  '汽车',
-  '文案',
-  '民生',
-  '教育',
-  '体育健身',
-  '游戏',
-  '科学',
-  '房产',
-  '育儿',
-  '文摘',
-  '动漫',
-  '历史',
-  '体制',
-  '美妆时尚',
-  '旅游',
-  '法律',
-  '壁纸头像',
-  '个人成长',
-  '商业营销',
-  '健康养生',
-  '搞笑',
-  '三农',
-  '宠物',
-  '数码',
-  '生活',
-  '开发者',
-  '摄影',
-  '家居',
-  '校园',
-  '宗教',
-] as const;
+import { ARTICLE_FIELDS } from '../config/constants';
+import { cn } from '../utils/utils';
+import ArticlePreview from './ArticlePreview';
 
 type ArticleField = typeof ARTICLE_FIELDS[number];
 
@@ -62,6 +18,7 @@ export default function ArticleGenerator() {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setArticle('');
     
     try {
       const response = await fetch('/api/generate', {
@@ -77,8 +34,9 @@ export default function ArticleGenerator() {
         throw new Error(errorData.error || '生成文章失败');
       }
 
-      const result = await response.json();
-      setArticle(result.content);
+      const data = await response.json();
+      // 处理换行符并设置文章内容
+      setArticle(data.content.replace(/\\n/g, '\n'));
     } catch (err) {
       setError(err instanceof Error ? err.message : '生成文章时出错');
     } finally {
@@ -87,65 +45,84 @@ export default function ArticleGenerator() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">AI 文章生成器</h1>
+    <div className="max-w-4xl mx-auto">
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-bold text-[#007AFF] mb-4">
+          公众号爆文 - AI文章生成器
+        </h1>
+        <p className="text-gray-600 max-w-2xl mx-auto">
+          专业的AI驱动内容创作助手，为您快速生成高质量原创文章
+        </p>
+      </div>
       
-      <form onSubmit={handleSubmit} className="space-y-4 mb-8">
-        <div>
-          <label htmlFor="field" className="block text-sm font-medium mb-1">
-            文章领域
-          </label>
-          <select
-            id="field"
-            value={field}
-            onChange={(e: ChangeEvent<HTMLSelectElement>) => setField(e.target.value as ArticleField)}
-            className="w-full p-2 border rounded"
-            required
+      <div className="card">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <label htmlFor="field" className="block text-sm font-medium text-gray-700">
+              文章领域
+            </label>
+            <select
+              id="field"
+              value={field}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => setField(e.target.value as ArticleField)}
+              className="input"
+              required
+            >
+              {ARTICLE_FIELDS.map((f) => (
+                <option key={f} value={f}>
+                  {f}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          <div className="space-y-2">
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              文章标题
+            </label>
+            <input
+              type="text"
+              id="title"
+              value={title}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
+              className="input"
+              placeholder="输入文章标题"
+              required
+            />
+          </div>
+          
+          <button
+            type="submit"
+            disabled={loading}
+            className={cn(
+              "btn btn-primary w-full",
+              loading && "opacity-70 cursor-not-allowed"
+            )}
           >
-            {ARTICLE_FIELDS.map((f) => (
-              <option key={f} value={f}>
-                {f}
-              </option>
-            ))}
-          </select>
-        </div>
-        
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium mb-1">
-            文章标题
-          </label>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
-            className="w-full p-2 border rounded"
-            placeholder="输入文章标题"
-            required
-          />
-        </div>
-        
-        <button
-          type="submit"
-          disabled={loading}
-          className={`w-full p-2 text-white rounded ${
-            loading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'
-          }`}
-        >
-          {loading ? '生成中...' : '生成文章'}
-        </button>
-      </form>
+            {loading ? (
+              <span className="flex items-center justify-center">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                正在生成...
+              </span>
+            ) : '生成文章'}
+          </button>
+        </form>
+      </div>
 
       {error && (
-        <div className="p-4 mb-4 text-red-700 bg-red-100 rounded">
-          API 调用失败: {error}
+        <div className="p-4 mt-6 rounded-xl bg-red-50 border border-red-200">
+          <p className="text-red-700">
+            {error}
+          </p>
         </div>
       )}
 
       {article && (
-        <div className="prose max-w-none">
-          <h2 className="text-xl font-bold mb-4">{title}</h2>
-          <div className="whitespace-pre-wrap">{article}</div>
+        <div className="mt-6">
+          <ArticlePreview title={title} content={article} />
         </div>
       )}
     </div>

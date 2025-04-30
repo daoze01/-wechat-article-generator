@@ -9,6 +9,21 @@ if (!DEEPSEEK_API_KEY) {
   console.error('环境变量 DEEPSEEK_API_KEY 未设置');
 }
 
+// 清理Markdown标记的函数
+function cleanMarkdown(text: string): string {
+  return text
+    .replace(/^#+\s*/gm, '') // 移除标题标记
+    .replace(/\*\*/g, '') // 移除加粗标记
+    .replace(/\*/g, '') // 移除斜体标记
+    .replace(/^\s*[-*+]\s+/gm, '') // 移除列表标记
+    .replace(/^\s*\d+\.\s+/gm, '') // 移除有序列表标记
+    .replace(/`{1,3}/g, '') // 移除代码标记
+    .replace(/_{1,2}/g, '') // 移除下划线标记
+    .replace(/\[\[.*?\]\]/g, '') // 移除双括号链接
+    .replace(/\[(.*?)\]\(.*?\)/g, '$1') // 保留链接文本，移除URL
+    .trim();
+}
+
 // 备用的文章模板
 const ARTICLE_TEMPLATE = {
   sections: [
@@ -27,7 +42,7 @@ function generateFromTemplate(field: string, title: string) {
   
   const content = ARTICLE_TEMPLATE.sections.map((section: string) => {
     const [sectionTitle, sectionDesc] = section.split('：');
-    return `【${sectionTitle}】\n${sectionDesc}与"${keywords.join(', ')}"相关的分析。\n\n`;
+    return `${sectionTitle}：\n${sectionDesc}与"${keywords.join(', ')}"相关的分析。\n\n`;
   }).join('');
 
   return {
@@ -59,19 +74,30 @@ export async function POST(request: NextRequest) {
         DEEPSEEK_API_URL,
         {
           model: 'deepseek-chat',
-          messages: [{ role: 'user', content: `请以专业公众号作者的口吻，围绕"${field}"领域的主题"${title}"写一篇文章。文章要求：
-1. 开头要吸引人，抓住读者眼球
-2. 分析当前形势
-3. 深入剖析原因
-4. 探讨影响
-5. 给出实用建议
-6. 总结展望
-请确保文章逻辑清晰，论述有力，观点独到。` }],
+          messages: [
+            {
+              role: 'system',
+              content: `你是一位专业的公众号写手，擅长写${field}领域的文章。写作风格要求：
+1. 开门见山，直击主题
+2. 段落简洁，重点突出
+3. 语言生动，观点鲜明
+4. 结构清晰，逻辑性强`
+            },
+            {
+              role: 'user',
+              content: `请围绕"${title}"写一篇文章，要求：
+1. 文章分为：引言、分析、建议、总结四个部分
+2. 每部分300字左右
+3. 直接给出内容，不要使用标题标记
+4. 确保每句话都有标点符号
+5. 使用数据和案例支撑观点`
+            }
+          ],
           temperature: 0.7,
-          max_tokens: 2000,
-          top_p: 0.95,
-          presence_penalty: 0.5,
-          frequency_penalty: 0.5,
+          max_tokens: 1500,
+          top_p: 0.85,
+          presence_penalty: 0.3,
+          frequency_penalty: 0.3,
         },
         {
           headers: {
@@ -85,19 +111,26 @@ export async function POST(request: NextRequest) {
         throw new Error('API 返回的数据格式不正确');
       }
 
+      // 清理返回的文本中的Markdown标记
+      let cleanedContent = cleanMarkdown(response.data.choices[0].message.content);
+      
+      // 确保文章末尾有适当的标点符号
+      cleanedContent = cleanedContent.replace(/([^。！？\n])\s*$/, '$1。');
+
       return NextResponse.json({
         title: title,
-        content: response.data.choices[0].message.content
+        content: cleanedContent
       });
+
     } catch (error) {
       console.error('DeepSeek API调用失败:', error);
       
       if (axios.isAxiosError(error)) {
-        // 处理余额不足的情况
         if (error.response?.status === 402) {
-          console.log('API余额不足，切换到模板生成模式');
-          // 使用模板生成
-          return NextResponse.json(generateFromTemplate(field, title));
+          return NextResponse.json(
+            { error: 'API余额不足，请联系管理员' },
+            { status: 402 }
+          );
         }
         
         if (error.response?.status === 401) {
@@ -115,9 +148,10 @@ export async function POST(request: NextRequest) {
         }
       }
       
-      // 其他错误情况下也使用模板生成
-      console.log('API调用出错，切换到模板生成模式');
-      return NextResponse.json(generateFromTemplate(field, title));
+      return NextResponse.json(
+        { error: '生成文章失败，请稍后重试' },
+        { status: 500 }
+      );
     }
   } catch (error) {
     console.error('请求处理失败:', error);
