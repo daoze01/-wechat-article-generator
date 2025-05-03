@@ -68,7 +68,7 @@ export default function ArticlePreview({ title, content }: { title: string; cont
         formattedText += '欢迎点赞、在看、分享和评论\n';
 
         await navigator.clipboard.writeText(formattedText);
-        alert("文章内容已复制，可直接粘贴到公众号编辑器！");
+        alert("文章内容已复制，可直接粘贴到公众号！");
       } catch (err) {
         alert("复制失败，请手动复制");
       }
