@@ -5,20 +5,35 @@ import axios from 'axios';
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 
-function analyzeStructure(content: string) {
+interface Section {
+  type: 'subtitle' | 'list' | 'divider' | 'paragraph';
+  text: string;
+  items?: string[];
+}
+
+interface Structure {
+  title: string;
+  sections: Section[];
+  formatting: {
+    emoji: boolean;
+    divider: boolean;
+  };
+}
+
+function analyzeStructure(content: string): Structure {
   // 提取标题（首行或首个非空行）
   const lines = content.split(/\r?\n/).map(l => l.trim());
   const title = lines.find(l => l.length > 0) || '';
   // 分段
   const paragraphs = content.split(/\n{2,}/).map(p => p.trim()).filter(p => p.length > 0);
   // 小标题、列表、分隔符等结构识别
-  const sections = paragraphs.map(p => {
+  const sections: Section[] = paragraphs.map(p => {
     if (/^([（(（【#\d一二三四五六七八九十]+[）)】.、：:])/.test(p)) {
       return { type: 'subtitle', text: p };
     } else if (/^[-•●\d]+[.、\s]/.test(p)) {
       // 列表项
       const items = p.split(/\n|(?<=\s)[-•●\d]+[.、\s]/).map(i => i.trim()).filter(i => i);
-      return { type: 'list', items };
+      return { type: 'list', text: p, items };
     } else if (/^[-_—=]{3,}$/.test(p)) {
       return { type: 'divider', text: p };
     } else {
