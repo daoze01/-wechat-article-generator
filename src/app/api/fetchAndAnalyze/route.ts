@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     let structureDesc = '';
     structure.sections.forEach((sec, idx) => {
       if (sec.type === 'subtitle') structureDesc += `\n小标题：${sec.text}`;
-      if (sec.type === 'list') structureDesc += `\n列表：${sec.items.join('；')}`;
+      if (sec.type === 'list' && sec.items) structureDesc += `\n列表：${sec.items.join('；')}`;
       if (sec.type === 'divider') structureDesc += `\n分隔符：${sec.text}`;
       if (sec.type === 'paragraph') structureDesc += `\n段落：${sec.text.slice(0, 20)}...`;
     });
