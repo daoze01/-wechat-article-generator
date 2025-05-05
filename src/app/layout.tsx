@@ -48,6 +48,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN" className={`${inter.variable}`}>
+      <head>
+        {/* Google tag (gtag.js) */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-PRTZ0KZK09"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-PRTZ0KZK09');
+            `,
+          }}
+        />
+      </head>
       <body className="min-h-screen bg-[#F5F5F7]">
         <div className="flex min-h-screen flex-col">
           <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-sm">
