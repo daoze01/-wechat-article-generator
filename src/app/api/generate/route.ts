@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import axios from 'axios';
+import { rewritePrompts } from '@/lib/rewritePrompts';
 
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
@@ -70,7 +71,10 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-      const prompt = `请以一位有丰富生活阅历、真实情感和独特观点的专业人类写作者身份，创作一篇公众号原创爆文。文章要具备真实感和人类语气，避免生硬、模板化和流水账结构。语言要自然、真诚、富有情绪感染力，适当使用第一人称视角、具体细节、真实经历、生活化场景和个人感悟。可以适当加入对话、反问、感叹、幽默、共鸣等元素，让内容更有温度和故事性。字数控制在1200-1500字，风格参考该领域近期10万+阅读的优质文章。主题为【${title}】，所属领域为【${field}】。请确保内容原创、自然、流畅，能通过AI检测工具的原创性检测。`;
+      const domainKey = field || '全部';
+      const rewriteConfig = rewritePrompts[domainKey] || rewritePrompts['全部'];
+      const { style, humanize_tips } = rewriteConfig;
+      const prompt = `\n${style}\n请根据以下要求写一篇公众号原创爆文：\n- 主题：【${title}】\n- 领域：【${field}】\n- ${(humanize_tips as string[]).map((tip: string, idx: number) => `${idx + 1}. ${tip}`).join('\\n- ')}\n- 语言自然、真诚、富有情绪感染力，适当使用第一人称、细节、真实经历、生活化场景和个人感悟。\n- 字数控制在1200-1500字，风格参考该领域近期10万+阅读的优质文章。\n- 请确保内容原创、自然、流畅，能通过AI检测工具的原创性检测。`;
       const response = await axios.post(
         DEEPSEEK_API_URL,
         {
