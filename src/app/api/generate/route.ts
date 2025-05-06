@@ -99,13 +99,13 @@ export async function POST(request: NextRequest) {
           messages: [
             {
               role: 'system',
-              content: `你是一个专业的公众号文章写作助手，擅长创作原创、有深度、有温度的文章。请根据用户提供的主题和领域，创作一篇符合公众号风格的优质文章。`
+              content: '你是一个专业的公众号文章写作助手，擅长创作原创、有深度、有温度的文章。请根据用户提供的主题和领域，创作一篇符合公众号风格的优质文章。'
             },
             {
               role: 'user',
               content: prompt
             }
-          ],
+          ]
         },
         {
           headers: {
