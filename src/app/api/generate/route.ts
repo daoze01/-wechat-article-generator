@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import axios from 'axios';
-import { rewritePrompts } from '@/lib/rewritePrompts';
+import { rewritePrompts } from '../../lib/rewritePrompts';
 
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
@@ -82,78 +82,4 @@ export async function POST(request: NextRequest) {
           messages: [
             {
               role: 'system',
-              content: `你是一位专业的公众号写手，擅长写${field}领域的文章。`
-            },
-            {
-              role: 'user',
-              content: prompt
-            }
-          ],
-          temperature: 0.7,
-          max_tokens: 2500,
-          top_p: 0.85,
-          presence_penalty: 0.3,
-          frequency_penalty: 0.3,
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      if (!response.data?.choices?.[0]?.message?.content) {
-        throw new Error('API 返回的数据格式不正确');
-      }
-
-      // 清理返回的文本中的Markdown标记
-      let cleanedContent = cleanMarkdown(response.data.choices[0].message.content);
-      
-      // 确保文章末尾有适当的标点符号
-      cleanedContent = cleanedContent.replace(/([^。！？\n])\s*$/, '$1。');
-
-      return NextResponse.json({
-        title: title,
-        content: cleanedContent
-      });
-
-    } catch (error) {
-      console.error('DeepSeek API调用失败:', error);
-      
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 402) {
-          return NextResponse.json(
-            { error: 'API余额不足，请联系管理员' },
-            { status: 402 }
-          );
-        }
-        
-        if (error.response?.status === 401) {
-          return NextResponse.json(
-            { error: 'API密钥无效' },
-            { status: 401 }
-          );
-        }
-        
-        if (error.response?.status === 429) {
-          return NextResponse.json(
-            { error: 'API调用次数超限，请稍后再试' },
-            { status: 429 }
-          );
-        }
-      }
-      
-      return NextResponse.json(
-        { error: '生成文章失败，请稍后重试' },
-        { status: 500 }
-      );
-    }
-  } catch (error) {
-    console.error('请求处理失败:', error);
-    return NextResponse.json(
-      { error: '生成文章失败，请稍后重试' },
-      { status: 500 }
-    );
-  }
-} 
+              content: `
