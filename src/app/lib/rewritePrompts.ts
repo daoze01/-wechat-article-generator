@@ -1,4 +1,14 @@
-export const rewritePrompts = {
+interface RewriteConfig {
+  style: string;
+  humanize_tips: string[];
+  rewrite_instruction: string;
+}
+
+interface RewritePrompts {
+  [key: string]: RewriteConfig;
+}
+
+export const rewritePrompts: RewritePrompts = {
   '全部': {
     style: '通用写作风格',
     humanize_tips: [
