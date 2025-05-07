@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import axios from 'axios';
-import { articleStyles, type ArticleStyle } from '../../lib/articleStyles';
+import { articleStyles, type ArticleStyle } from '../../../lib/articleStyles';
 
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
