@@ -1,9 +1,18 @@
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { message } from "antd";
 import "antd/dist/reset.css";
 
 export default function ArticlePreview({ title, content }: { title: string; content: string }) {
   const articleRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // 检测设备类型
+  useEffect(() => {
+    const checkMobile = () => {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    };
+    setIsMobile(checkMobile());
+  }, []);
 
   // 降级复制方法1: 使用document.execCommand
   const fallbackCopyTextToClipboard = (text: string): boolean => {
@@ -26,6 +35,13 @@ export default function ArticlePreview({ title, content }: { title: string; cont
     
     // 特别处理iOS设备
     if (navigator.userAgent.match(/ipad|iphone/i)) {
+      // 为iOS设备优化
+      textArea.style.fontSize = '16px'; // 防止缩放
+      textArea.style.position = 'absolute';
+      textArea.style.left = '-9999px';
+      textArea.contentEditable = 'true';
+      textArea.readOnly = false;
+      
       const range = document.createRange();
       range.selectNodeContents(textArea);
       const selection = window.getSelection();
@@ -42,66 +58,192 @@ export default function ArticlePreview({ title, content }: { title: string; cont
     try {
       successful = document.execCommand('copy');
     } catch (err) {
-      console.error('复制失败', err);
+      console.error('execCommand复制失败', err);
     }
     
     document.body.removeChild(textArea);
     return successful;
   };
 
-  // 降级复制方法2: 选中内容提示用户手动复制
+  // 降级复制方法2: 使用input元素尝试复制
+  const inputElementCopy = (text: string): boolean => {
+    const input = document.createElement('input');
+    input.value = text;
+    
+    // 优化移动端样式
+    input.style.position = 'fixed';
+    input.style.opacity = '0';
+    input.style.fontSize = '16px'; // 防止iOS缩放
+    input.style.width = '100%';
+    input.style.left = '0';
+    input.style.top = '0';
+    
+    document.body.appendChild(input);
+    input.focus();
+    input.select();
+    
+    let successful = false;
+    try {
+      successful = document.execCommand('copy');
+    } catch (err) {
+      console.error('input复制失败', err);
+    }
+    
+    document.body.removeChild(input);
+    return successful;
+  };
+
+  // 降级复制方法3: 选中内容提示用户手动复制
   const selectTextForManualCopy = (text: string) => {
+    // 检测是否在微信内置浏览器中
+    const isWechat = /MicroMessenger/i.test(navigator.userAgent);
+    
+    // 创建模态弹窗
     const textDisplay = document.createElement('div');
     textDisplay.style.position = 'fixed';
-    textDisplay.style.top = '50%';
-    textDisplay.style.left = '50%';
-    textDisplay.style.transform = 'translate(-50%, -50%)';
-    textDisplay.style.zIndex = '9999';
-    textDisplay.style.backgroundColor = 'white';
+    textDisplay.style.top = '0';
+    textDisplay.style.left = '0';
+    textDisplay.style.right = '0';
+    textDisplay.style.bottom = '0';
+    textDisplay.style.backgroundColor = 'rgba(0,0,0,0.7)';
+    textDisplay.style.zIndex = '10000';
+    textDisplay.style.display = 'flex';
+    textDisplay.style.flexDirection = 'column';
+    textDisplay.style.alignItems = 'center';
+    textDisplay.style.justifyContent = 'center';
     textDisplay.style.padding = '20px';
-    textDisplay.style.border = '1px solid #ccc';
-    textDisplay.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
-    textDisplay.style.width = '80%';
-    textDisplay.style.maxWidth = '500px';
-    textDisplay.style.maxHeight = '80vh';
-    textDisplay.style.overflow = 'auto';
-    textDisplay.style.borderRadius = '5px';
     
+    // 创建内容容器
+    const contentBox = document.createElement('div');
+    contentBox.style.backgroundColor = 'white';
+    contentBox.style.width = '90%';
+    contentBox.style.maxWidth = '500px';
+    contentBox.style.maxHeight = '80vh';
+    contentBox.style.borderRadius = '8px';
+    contentBox.style.padding = '20px';
+    contentBox.style.overflowY = 'auto';
+    contentBox.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+    contentBox.style.display = 'flex';
+    contentBox.style.flexDirection = 'column';
+    
+    // 标题
+    const title = document.createElement('h3');
+    title.textContent = '复制文章内容';
+    title.style.textAlign = 'center';
+    title.style.margin = '0 0 15px 0';
+    title.style.color = '#1890ff';
+    title.style.fontSize = '18px';
+    
+    // 提示信息
+    const instructions = document.createElement('p');
+    instructions.innerHTML = isWechat 
+      ? '在<strong>微信浏览器</strong>中复制可能受限，请：<br>1. 长按下方文本<br>2. 在弹出菜单中选择"复制"<br>3. 粘贴到公众号编辑器中'
+      : '请长按下方文本，选择"复制"选项：';
+    instructions.style.fontSize = '14px';
+    instructions.style.margin = '0 0 15px 0';
+    instructions.style.color = '#555';
+    instructions.style.lineHeight = '1.5';
+    
+    // 文本区域
+    const textContent = document.createElement('div');
+    textContent.textContent = text;
+    textContent.style.padding = '15px';
+    textContent.style.backgroundColor = '#f5f5f5';
+    textContent.style.borderRadius = '4px';
+    textContent.style.fontSize = '14px';
+    textContent.style.lineHeight = '1.5';
+    textContent.style.color = '#333';
+    textContent.style.border = '1px solid #e8e8e8';
+    textContent.style.whiteSpace = 'pre-wrap';
+    textContent.style.wordBreak = 'break-word';
+    textContent.style.userSelect = 'all'; // 使整个文本可选中
+    
+    // 手动复制按钮
+    const copyButton = document.createElement('button');
+    copyButton.textContent = '尝试复制';
+    copyButton.style.backgroundColor = '#1890ff';
+    copyButton.style.color = 'white';
+    copyButton.style.border = 'none';
+    copyButton.style.borderRadius = '4px';
+    copyButton.style.padding = '8px 16px';
+    copyButton.style.margin = '15px 0';
+    copyButton.style.cursor = 'pointer';
+    copyButton.style.fontSize = '14px';
+    copyButton.style.width = '100%';
+    
+    copyButton.onclick = () => {
+      // 尝试使用API复制
+      const textToCopy = textContent.textContent || '';
+      let success = false;
+      
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(textToCopy)
+            .then(() => {
+              message.success('复制成功！');
+            })
+            .catch(() => {
+              if (document.execCommand('copy')) {
+                message.success('复制成功！');
+              } else {
+                message.info('请长按选择文本手动复制');
+              }
+            });
+        } else if (document.execCommand('copy')) {
+          const selection = window.getSelection();
+          const range = document.createRange();
+          range.selectNodeContents(textContent);
+          selection?.removeAllRanges();
+          selection?.addRange(range);
+          success = document.execCommand('copy');
+          if (success) {
+            message.success('复制成功！');
+          } else {
+            message.info('请长按选择文本手动复制');
+          }
+        }
+      } catch (err) {
+        console.error('复制按钮点击时出错', err);
+        message.info('请长按选择文本手动复制');
+      }
+    };
+    
+    // 关闭按钮
     const closeButton = document.createElement('button');
     closeButton.textContent = '关闭';
-    closeButton.style.padding = '8px 16px';
-    closeButton.style.backgroundColor = '#f44336';
-    closeButton.style.color = 'white';
-    closeButton.style.border = 'none';
+    closeButton.style.backgroundColor = '#f5f5f5';
+    closeButton.style.color = '#333';
+    closeButton.style.border = '1px solid #d9d9d9';
     closeButton.style.borderRadius = '4px';
+    closeButton.style.padding = '8px 16px';
     closeButton.style.cursor = 'pointer';
-    closeButton.style.marginTop = '15px';
-    closeButton.style.display = 'block';
-    closeButton.style.margin = '15px auto 0';
+    closeButton.style.fontSize = '14px';
+    closeButton.style.width = '100%';
     
     closeButton.onclick = () => {
       document.body.removeChild(textDisplay);
     };
     
-    const instructions = document.createElement('p');
-    instructions.textContent = '请长按下方文本进行选择，然后点击"复制"选项：';
-    instructions.style.fontWeight = 'bold';
-    instructions.style.marginBottom = '10px';
-    instructions.style.color = '#1890ff';
+    // 添加所有元素
+    contentBox.appendChild(title);
+    contentBox.appendChild(instructions);
+    contentBox.appendChild(textContent);
+    contentBox.appendChild(copyButton);
+    contentBox.appendChild(closeButton);
+    textDisplay.appendChild(contentBox);
     
-    const textContent = document.createElement('pre');
-    textContent.textContent = text;
-    textContent.style.whiteSpace = 'pre-wrap';
-    textContent.style.wordBreak = 'break-word';
-    textContent.style.border = '1px solid #eee';
-    textContent.style.padding = '10px';
-    textContent.style.borderRadius = '4px';
-    textContent.style.backgroundColor = '#f9f9f9';
-    
-    textDisplay.appendChild(instructions);
-    textDisplay.appendChild(textContent);
-    textDisplay.appendChild(closeButton);
     document.body.appendChild(textDisplay);
+    
+    // 自动选中文本，便于用户直接复制
+    try {
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(textContent);
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+    } catch (e) {
+      console.error('自动选中文本失败', e);
+    }
   };
 
   const handleCopy = async () => {
@@ -168,6 +310,13 @@ export default function ArticlePreview({ title, content }: { title: string; cont
         formattedText += '\n—————————\n';
         formattedText += '欢迎点赞、在看、分享和评论\n';
 
+        // 在移动设备上直接使用手动复制对话框
+        if (isMobile && /MicroMessenger|QQ|Alipay/i.test(navigator.userAgent)) {
+          console.log('在微信/QQ/支付宝中，直接使用手动复制对话框');
+          selectTextForManualCopy(formattedText);
+          return;
+        }
+
         // 尝试使用现代Clipboard API
         let copied = false;
         if (navigator.clipboard && window.isSecureContext) {
@@ -175,31 +324,47 @@ export default function ArticlePreview({ title, content }: { title: string; cont
             await navigator.clipboard.writeText(formattedText);
             copied = true;
             message.success("文章内容已复制，可直接粘贴到公众号！");
+            console.log('Clipboard API复制成功');
           } catch (err) {
             console.warn("Clipboard API 复制失败，将尝试降级方案", err);
           }
         }
         
-        // 如果现代API失败，尝试降级方案
+        // 如果现代API失败，尝试降级方案1: execCommand
         if (!copied) {
           const execCommandSuccess = fallbackCopyTextToClipboard(formattedText);
           if (execCommandSuccess) {
             message.success("文章内容已复制，可直接粘贴到公众号！");
             copied = true;
+            console.log('execCommand复制成功');
+          } else {
+            console.warn('execCommand复制失败，尝试input元素复制');
+          }
+        }
+        
+        // 如果execCommand失败，尝试降级方案2: input元素
+        if (!copied) {
+          const inputSuccess = inputElementCopy(formattedText);
+          if (inputSuccess) {
+            message.success("文章内容已复制，可直接粘贴到公众号！");
+            copied = true;
+            console.log('input元素复制成功');
+          } else {
+            console.warn('input元素复制失败，显示手动复制对话框');
           }
         }
         
         // 如果所有自动复制方法都失败，显示选择框让用户手动复制
         if (!copied) {
-          message.warning("自动复制失败，请手动复制文本");
+          message.warning("自动复制功能受限，请使用手动复制");
           selectTextForManualCopy(formattedText);
         }
       } catch (err) {
         console.error("复制过程中发生错误", err);
-        message.error("复制失败，请手动复制");
+        message.error("复制失败，请尝试手动复制");
         // 最终降级方案
         if (articleRef.current?.textContent) {
-          selectTextForManualCopy(articleRef.current.textContent);
+          selectTextForManualCopy(content);
         }
       }
     }
