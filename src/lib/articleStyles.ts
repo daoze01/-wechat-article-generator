@@ -8,6 +8,18 @@ export type ArticleStyles = {
   [key: string]: ArticleStyle;
 };
 
+export const defaultConfig: Record<string, ArticleStyle> = {
+  "全部": {
+    style: "简洁明快",
+    humanize_tips: [
+      "结合用户视角",
+      "避免AI口吻",
+      "多举例"
+    ],
+    rewrite_instruction: "请模仿人类写作逻辑，保持自然、真实、口语化的语言风格"
+  }
+};
+
 export const articleStyles: ArticleStyles = {
   "情感": {
     style: "情绪共鸣，第一人称叙述",
