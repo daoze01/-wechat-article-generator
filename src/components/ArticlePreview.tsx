@@ -105,7 +105,7 @@ export default function ArticlePreview({ title, content }: { title: string; cont
     textDisplay.style.left = '0';
     textDisplay.style.right = '0';
     textDisplay.style.bottom = '0';
-    textDisplay.style.backgroundColor = 'rgba(0,0,0,0.7)';
+    textDisplay.style.backgroundColor = 'rgba(0,0,0,0.85)';
     textDisplay.style.zIndex = '10000';
     textDisplay.style.display = 'flex';
     textDisplay.style.flexDirection = 'column';
@@ -119,57 +119,99 @@ export default function ArticlePreview({ title, content }: { title: string; cont
     contentBox.style.width = '90%';
     contentBox.style.maxWidth = '500px';
     contentBox.style.maxHeight = '80vh';
-    contentBox.style.borderRadius = '8px';
+    contentBox.style.borderRadius = '12px';
     contentBox.style.padding = '20px';
     contentBox.style.overflowY = 'auto';
-    contentBox.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+    contentBox.style.boxShadow = '0 8px 24px rgba(0,0,0,0.25)';
     contentBox.style.display = 'flex';
     contentBox.style.flexDirection = 'column';
     
     // 标题
     const title = document.createElement('h3');
-    title.textContent = '复制文章内容';
+    title.textContent = '文章内容 - 长按下方文本复制';
     title.style.textAlign = 'center';
     title.style.margin = '0 0 15px 0';
     title.style.color = '#1890ff';
     title.style.fontSize = '18px';
+    title.style.fontWeight = 'bold';
     
     // 提示信息
-    const instructions = document.createElement('p');
-    instructions.innerHTML = isWechat 
-      ? '在<strong>微信浏览器</strong>中复制可能受限，请：<br>1. 长按下方文本<br>2. 在弹出菜单中选择"复制"<br>3. 粘贴到公众号编辑器中'
-      : '请长按下方文本，选择"复制"选项：';
+    const instructions = document.createElement('div');
+    const isSafari = /safari/i.test(navigator.userAgent) && !/chrome/i.test(navigator.userAgent);
+    
+    if (isWechat) {
+      instructions.innerHTML = '<div style="background-color:#f5f0ff; border-radius:8px; padding:12px; margin-bottom:15px;">' +
+        '<span style="color:#722ed1; font-weight:bold;">微信浏览器提示：</span><br>' +
+        '1. 长按下方蓝色区域<br>' +
+        '2. 在弹出菜单中选择"复制"<br>' +
+        '3. 粘贴到公众号编辑器中' +
+        '</div>';
+    } else if (isSafari) {
+      instructions.innerHTML = '<div style="background-color:#f0f9ff; border-radius:8px; padding:12px; margin-bottom:15px;">' +
+        '<span style="color:#1677ff; font-weight:bold;">iOS Safari提示：</span><br>' +
+        '1. 点击下方蓝色区域<br>' +
+        '2. 点击"全选"<br>' +
+        '3. 点击"复制"<br>' +
+        '4. 粘贴到公众号编辑器中' +
+        '</div>';
+    } else {
+      instructions.innerHTML = '<div style="background-color:#f6ffed; border-radius:8px; padding:12px; margin-bottom:15px;">' +
+        '<span style="color:#52c41a; font-weight:bold;">操作提示：</span><br>' +
+        '1. 长按下方蓝色区域选择文本<br>' +
+        '2. 点击"复制"<br>' +
+        '3. 粘贴到公众号编辑器中' +
+        '</div>';
+    }
+    
     instructions.style.fontSize = '14px';
-    instructions.style.margin = '0 0 15px 0';
-    instructions.style.color = '#555';
-    instructions.style.lineHeight = '1.5';
+    instructions.style.lineHeight = '1.6';
+    instructions.style.marginBottom = '10px';
     
     // 文本区域
     const textContent = document.createElement('div');
     textContent.textContent = text;
     textContent.style.padding = '15px';
-    textContent.style.backgroundColor = '#f5f5f5';
-    textContent.style.borderRadius = '4px';
+    textContent.style.backgroundColor = '#e6f7ff';
+    textContent.style.borderRadius = '8px';
     textContent.style.fontSize = '14px';
-    textContent.style.lineHeight = '1.5';
+    textContent.style.lineHeight = '1.6';
     textContent.style.color = '#333';
-    textContent.style.border = '1px solid #e8e8e8';
+    textContent.style.border = '1px solid #91d5ff';
     textContent.style.whiteSpace = 'pre-wrap';
     textContent.style.wordBreak = 'break-word';
     textContent.style.userSelect = 'all'; // 使整个文本可选中
+    // 使用dataset添加属性，绕过TypeScript检查
+    (textContent as any).style['-webkit-user-select'] = 'all';
+    (textContent as any).style['-moz-user-select'] = 'all';
+    
+    // 文本区域点击高亮
+    textContent.addEventListener('click', function() {
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(textContent);
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+    });
+    
+    // 小贴士
+    const tips = document.createElement('div');
+    tips.innerHTML = '<div style="margin-top:15px; font-size:12px; color:#888; text-align:center; font-style:italic;">' +
+      '💡 小贴士：如果复制不成功，可以尝试截图保存，然后使用图片识别文字功能' +
+      '</div>';
     
     // 手动复制按钮
     const copyButton = document.createElement('button');
-    copyButton.textContent = '尝试复制';
+    copyButton.textContent = '尝试自动复制';
     copyButton.style.backgroundColor = '#1890ff';
     copyButton.style.color = 'white';
     copyButton.style.border = 'none';
-    copyButton.style.borderRadius = '4px';
-    copyButton.style.padding = '8px 16px';
-    copyButton.style.margin = '15px 0';
+    copyButton.style.borderRadius = '8px';
+    copyButton.style.padding = '12px 16px';
+    copyButton.style.margin = '20px 0 10px';
     copyButton.style.cursor = 'pointer';
-    copyButton.style.fontSize = '14px';
+    copyButton.style.fontSize = '16px';
     copyButton.style.width = '100%';
+    copyButton.style.fontWeight = 'bold';
     
     copyButton.onclick = () => {
       // 尝试使用API复制
@@ -181,15 +223,28 @@ export default function ArticlePreview({ title, content }: { title: string; cont
           navigator.clipboard.writeText(textToCopy)
             .then(() => {
               message.success('复制成功！');
+              // 更新按钮状态
+              copyButton.textContent = '✓ 复制成功';
+              copyButton.style.backgroundColor = '#52c41a';
             })
             .catch(() => {
+              const selection = window.getSelection();
+              const range = document.createRange();
+              range.selectNodeContents(textContent);
+              selection?.removeAllRanges();
+              selection?.addRange(range);
+              
               if (document.execCommand('copy')) {
                 message.success('复制成功！');
+                copyButton.textContent = '✓ 复制成功';
+                copyButton.style.backgroundColor = '#52c41a';
               } else {
-                message.info('请长按选择文本手动复制');
+                message.info('请长按文本手动复制');
+                copyButton.textContent = '× 自动复制失败，请手动复制';
+                copyButton.style.backgroundColor = '#ff4d4f';
               }
             });
-        } else if (document.execCommand('copy')) {
+        } else {
           const selection = window.getSelection();
           const range = document.createRange();
           range.selectNodeContents(textContent);
@@ -198,13 +253,19 @@ export default function ArticlePreview({ title, content }: { title: string; cont
           success = document.execCommand('copy');
           if (success) {
             message.success('复制成功！');
+            copyButton.textContent = '✓ 复制成功';
+            copyButton.style.backgroundColor = '#52c41a';
           } else {
-            message.info('请长按选择文本手动复制');
+            message.info('请长按文本手动复制');
+            copyButton.textContent = '× 自动复制失败，请手动复制';
+            copyButton.style.backgroundColor = '#ff4d4f';
           }
         }
       } catch (err) {
         console.error('复制按钮点击时出错', err);
-        message.info('请长按选择文本手动复制');
+        message.info('请长按文本手动复制');
+        copyButton.textContent = '× 自动复制失败，请手动复制';
+        copyButton.style.backgroundColor = '#ff4d4f';
       }
     };
     
@@ -214,8 +275,8 @@ export default function ArticlePreview({ title, content }: { title: string; cont
     closeButton.style.backgroundColor = '#f5f5f5';
     closeButton.style.color = '#333';
     closeButton.style.border = '1px solid #d9d9d9';
-    closeButton.style.borderRadius = '4px';
-    closeButton.style.padding = '8px 16px';
+    closeButton.style.borderRadius = '8px';
+    closeButton.style.padding = '10px 16px';
     closeButton.style.cursor = 'pointer';
     closeButton.style.fontSize = '14px';
     closeButton.style.width = '100%';
@@ -228,6 +289,7 @@ export default function ArticlePreview({ title, content }: { title: string; cont
     contentBox.appendChild(title);
     contentBox.appendChild(instructions);
     contentBox.appendChild(textContent);
+    contentBox.appendChild(tips);
     contentBox.appendChild(copyButton);
     contentBox.appendChild(closeButton);
     textDisplay.appendChild(contentBox);
@@ -310,13 +372,14 @@ export default function ArticlePreview({ title, content }: { title: string; cont
         formattedText += '\n—————————\n';
         formattedText += '欢迎点赞、在看、分享和评论\n';
 
-        // 在移动设备上直接使用手动复制对话框
-        if (isMobile && /MicroMessenger|QQ|Alipay/i.test(navigator.userAgent)) {
-          console.log('在微信/QQ/支付宝中，直接使用手动复制对话框');
+        // 在移动设备上，直接显示手动复制对话框，不尝试自动复制
+        if (isMobile) {
+          console.log('检测到移动设备，直接使用手动复制对话框');
           selectTextForManualCopy(formattedText);
           return;
         }
 
+        // 仅在桌面设备上尝试自动复制
         // 尝试使用现代Clipboard API
         let copied = false;
         if (navigator.clipboard && window.isSecureContext) {
