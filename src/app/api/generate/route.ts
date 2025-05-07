@@ -1,3 +1,7 @@
+import fs from 'fs';
+console.log('Trying to import rewritePrompts from path');
+
+
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import axios from 'axios';
