@@ -1,7 +1,115 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 export default function ArticlePreview({ title, content }: { title: string; content: string }) {
   const articleRef = useRef<HTMLDivElement>(null);
+  const [copyMessage, setCopyMessage] = useState<string>("");
+  const [showToast, setShowToast] = useState<boolean>(false);
+
+  // 显示提示消息
+  const showMessage = (message: string) => {
+    setCopyMessage(message);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
+  };
+
+  // 降级复制方法1: 使用document.execCommand
+  const fallbackCopyTextToClipboard = (text: string): boolean => {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    
+    // 设置样式使文本域不可见
+    textArea.style.position = 'fixed';
+    textArea.style.left = '0';
+    textArea.style.top = '0';
+    textArea.style.width = '2em';
+    textArea.style.height = '2em';
+    textArea.style.padding = '0';
+    textArea.style.border = 'none';
+    textArea.style.outline = 'none';
+    textArea.style.boxShadow = 'none';
+    textArea.style.background = 'transparent';
+    
+    document.body.appendChild(textArea);
+    
+    // 特别处理iOS设备
+    if (navigator.userAgent.match(/ipad|iphone/i)) {
+      const range = document.createRange();
+      range.selectNodeContents(textArea);
+      const selection = window.getSelection();
+      if (selection) {
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+      textArea.setSelectionRange(0, 999999);
+    } else {
+      textArea.select();
+    }
+    
+    let successful = false;
+    try {
+      successful = document.execCommand('copy');
+    } catch (err) {
+      console.error('复制失败', err);
+    }
+    
+    document.body.removeChild(textArea);
+    return successful;
+  };
+
+  // 降级复制方法2: 选中内容提示用户手动复制
+  const selectTextForManualCopy = (text: string) => {
+    const textDisplay = document.createElement('div');
+    textDisplay.style.position = 'fixed';
+    textDisplay.style.top = '50%';
+    textDisplay.style.left = '50%';
+    textDisplay.style.transform = 'translate(-50%, -50%)';
+    textDisplay.style.zIndex = '9999';
+    textDisplay.style.backgroundColor = 'white';
+    textDisplay.style.padding = '20px';
+    textDisplay.style.border = '1px solid #ccc';
+    textDisplay.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
+    textDisplay.style.width = '80%';
+    textDisplay.style.maxWidth = '500px';
+    textDisplay.style.maxHeight = '80vh';
+    textDisplay.style.overflow = 'auto';
+    textDisplay.style.borderRadius = '5px';
+    
+    const closeButton = document.createElement('button');
+    closeButton.textContent = '关闭';
+    closeButton.style.padding = '8px 16px';
+    closeButton.style.backgroundColor = '#f44336';
+    closeButton.style.color = 'white';
+    closeButton.style.border = 'none';
+    closeButton.style.borderRadius = '4px';
+    closeButton.style.cursor = 'pointer';
+    closeButton.style.marginTop = '15px';
+    closeButton.style.display = 'block';
+    closeButton.style.margin = '15px auto 0';
+    
+    closeButton.onclick = () => {
+      document.body.removeChild(textDisplay);
+    };
+    
+    const instructions = document.createElement('p');
+    instructions.textContent = '请长按下方文本进行选择，然后点击"复制"选项：';
+    instructions.style.fontWeight = 'bold';
+    instructions.style.marginBottom = '10px';
+    instructions.style.color = '#1890ff';
+    
+    const textContent = document.createElement('pre');
+    textContent.textContent = text;
+    textContent.style.whiteSpace = 'pre-wrap';
+    textContent.style.wordBreak = 'break-word';
+    textContent.style.border = '1px solid #eee';
+    textContent.style.padding = '10px';
+    textContent.style.borderRadius = '4px';
+    textContent.style.backgroundColor = '#f9f9f9';
+    
+    textDisplay.appendChild(instructions);
+    textDisplay.appendChild(textContent);
+    textDisplay.appendChild(closeButton);
+    document.body.appendChild(textDisplay);
+  };
 
   const handleCopy = async () => {
     if (articleRef.current) {
@@ -67,10 +175,39 @@ export default function ArticlePreview({ title, content }: { title: string; cont
         formattedText += '\n—————————\n';
         formattedText += '欢迎点赞、在看、分享和评论\n';
 
-        await navigator.clipboard.writeText(formattedText);
-        alert("文章内容已复制，可直接粘贴到公众号编辑器！");
+        // 尝试使用现代Clipboard API
+        let copied = false;
+        if (navigator.clipboard && window.isSecureContext) {
+          try {
+            await navigator.clipboard.writeText(formattedText);
+            copied = true;
+            showMessage("复制成功！可直接粘贴到公众号编辑器");
+          } catch (err) {
+            console.warn("Clipboard API 复制失败，将尝试降级方案", err);
+          }
+        }
+        
+        // 如果现代API失败，尝试降级方案
+        if (!copied) {
+          const execCommandSuccess = fallbackCopyTextToClipboard(formattedText);
+          if (execCommandSuccess) {
+            showMessage("复制成功！可直接粘贴到公众号编辑器");
+            copied = true;
+          }
+        }
+        
+        // 如果所有自动复制方法都失败，显示选择框让用户手动复制
+        if (!copied) {
+          showMessage("自动复制失败，请手动复制文本");
+          selectTextForManualCopy(formattedText);
+        }
       } catch (err) {
-        alert("复制失败，请手动复制");
+        console.error("复制过程中发生错误", err);
+        showMessage("复制失败，请手动操作");
+        // 最终降级方案
+        if (articleRef.current?.textContent) {
+          selectTextForManualCopy(articleRef.current.textContent);
+        }
       }
     }
   };
@@ -188,6 +325,12 @@ export default function ArticlePreview({ title, content }: { title: string; cont
       >
         复制全文
       </button>
+
+      {showToast && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg z-50 animate-fade-in-out">
+          {copyMessage}
+        </div>
+      )}
 
       <div
         ref={articleRef}
