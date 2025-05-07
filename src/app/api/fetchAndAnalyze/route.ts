@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
     });
     
     // 使用情感领域的配置作为默认配置
-    const defaultConfig = articleStyles['情感'];
+    const defaultConfig: ArticleStyle = articleStyles['情感'];
     const { style, rewrite_instruction, prompt: basePrompt } = defaultConfig;
     
     const finalPrompt = `\n${style}\n${rewrite_instruction}\n${basePrompt}\n请仿照以下对标文章的标题、结构、排版和风格，创作一篇全新公众号原创爆文。要求：\n- 标题风格与对标文章一致，但表达不同。\n- 结构、排版、分段、列表等与对标文章一致，但内容表达必须原创，不能直接复制原文句子。\n- 用不同的语句和用词表达相同意思，适合公众号发布，能通过AI检测工具的原创性检测。\n- 总字数请控制在1400-1500字之间，如未达到字数请继续补充内容。\n\n【对标文章标题】\n${structure.title}\n\n【对标文章结构】${structureDesc}\n\n【新主题】\n${theme}\n\n请严格按照上述要求生成新文章，确保内容自然流畅、富有细节和情感，AI率低于20%。`;
