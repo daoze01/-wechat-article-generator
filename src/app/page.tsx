@@ -44,8 +44,8 @@ export default function HomePage() {
             <div className="space-y-3">
                 <SidebarButton href="/title-generator" icon="🏷️" text="爆文题目生成" />
                 <SidebarButton href="/generate" icon="✍️" text="爆文生成" />
-                <SidebarButton href="/" icon="🖼️" text="图片生成" />
-                <SidebarButton href="/" icon="🛡️" text="原创检测" />
+                <SidebarButton href="/image-generator" icon="🖼️" text="图片生成" />
+                <SidebarButton href="/originality-check" icon="🛡️" text="原创检测" />
                 <SidebarButton href="https://matrix.tencent.com/ai-detect/ai_gen_txt" icon="🤖" text="AI检测" />
                 <SidebarButton href="/guestbook" icon="💬" text="留言板" />
             </div>
