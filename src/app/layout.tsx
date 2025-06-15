@@ -76,7 +76,7 @@ export default function RootLayout({
                   <Link href="/" className="text-gray-600 hover:text-blue-600">首页</Link>
                   <Link href="/title-generator" className="text-gray-600 hover:text-blue-600">爆文题目生成</Link>
                   <Link href="/generate" className="text-gray-600 hover:text-blue-600">爆文生成</Link>
-                  <Link href="/" className="text-gray-600 hover:text-blue-600">图片生成</Link>
+                  <Link href="/image-generator" className="text-gray-600 hover:text-blue-600">图片生成</Link>
                   <Link href="/originality-check" className="text-gray-600 hover:text-blue-600">原创检测</Link>
                   <Link href="https://matrix.tencent.com/ai-detect/ai_gen_txt" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-600">AI检测</Link>
                   <Link href="/guestbook" className="text-gray-600 hover:text-blue-600">留言板</Link>
