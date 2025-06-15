@@ -9,9 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ai-sdk/deepseek": "^0.2.14",
+    "@radix-ui/react-slot": "^1.2.3",
+    "ai": "^4.3.16",
     "antd": "^5.24.9",
     "axios": "^1.6.7",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "lucide-react": "^0.514.0",
     "next": "14.1.0",
     "puppeteer": "^24.8.0",
     "react": "^18.2.0",

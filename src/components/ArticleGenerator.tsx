@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, FormEvent, ChangeEvent } from 'react';
+import React, { useState, FormEvent, ChangeEvent, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { ARTICLE_FIELDS } from '../config/constants';
 import { cn } from '../utils/utils';
 import ArticlePreview from './ArticlePreview';
@@ -8,7 +9,8 @@ import { message } from 'antd';
 
 type ArticleField = typeof ARTICLE_FIELDS[number];
 
-export default function ArticleGenerator() {
+function ArticleGeneratorInternal() {
+  const searchParams = useSearchParams();
   const [field, setField] = useState<ArticleField>(ARTICLE_FIELDS[0]);
   const [title, setTitle] = useState('');
   const [article, setArticle] = useState('');
@@ -22,6 +24,13 @@ export default function ArticleGenerator() {
   const [refLoading, setRefLoading] = useState(false);
   const [refError, setRefError] = useState('');
   const [refResult, setRefResult] = useState<{ refTitle: string; refContent: string; theme: string; generated: string } | null>(null);
+
+  useEffect(() => {
+    const titleFromUrl = searchParams.get('title');
+    if (titleFromUrl) {
+      setTitle(titleFromUrl);
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -222,4 +231,12 @@ export default function ArticleGenerator() {
       </div>
     </div>
   );
+}
+
+export default function ArticleGenerator() {
+  return (
+    <React.Suspense fallback={<div>Loading...</div>}>
+      <ArticleGeneratorInternal />
+    </React.Suspense>
+  )
 } 
