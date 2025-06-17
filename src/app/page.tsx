@@ -1,4 +1,16 @@
+'use client';
+
 import Link from 'next/link';
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import React from 'react';
 
 // Helper component for Feature Cards
 function FeatureCard({ icon, title, description }: { icon: string; title: string; description: string; }) {
@@ -12,13 +24,13 @@ function FeatureCard({ icon, title, description }: { icon: string; title: string
 }
 
 // Helper component for Template Cards
-function TemplateCard({ icon, title, description }: { icon: string; title: string; description: string; }) {
+function TemplateCard({ icon, title, description, href }: { icon: string; title: string; description: string; href: string; }) {
   return (
-    <div className="border border-gray-200 p-6 rounded-lg hover:bg-gray-50 transition-colors">
+    <Link href={href} className="block border border-gray-200 p-6 rounded-lg hover:bg-gray-50 hover:shadow-md transition-all cursor-pointer">
       <div className="text-3xl mb-3">{icon}</div>
       <h4 className="font-semibold text-lg">{title}</h4>
       <p className="text-gray-500 mt-1">{description}</p>
-    </div>
+    </Link>
   );
 }
 
@@ -33,15 +45,19 @@ function SidebarButton({ href, icon, text }: { href:string; icon:string; text:st
 }
 
 export default function HomePage() {
+  const plugin = React.useRef(
+    Autoplay({ delay: 4000, stopOnInteraction: true })
+  );
+
   return (
     <div className="bg-gray-50 text-gray-800">
       {/* Hero Banner */}
       <section className="bg-white border-b border-gray-200">
-        <div className="container mx-auto px-4 py-16 flex flex-col lg:flex-row items-center gap-8">
+        <div className="container mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-6 gap-8 items-stretch">
           
-          {/* Left Sidebar (1/5) */}
-          <div className="w-full lg:w-1/5">
-            <div className="space-y-3">
+          {/* Left Sidebar (1/6) */}
+          <div className="lg:col-span-1 flex flex-col">
+            <div className="flex-1 flex flex-col justify-between">
                 <SidebarButton href="/title-generator" icon="🏷️" text="爆文题目生成" />
                 <SidebarButton href="/generate" icon="✍️" text="爆文生成" />
                 <SidebarButton href="/image-generator" icon="🖼️" text="图片生成" />
@@ -51,23 +67,68 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Right Content (4/5) */}
-          <div className="w-full lg:w-4/5 text-center">
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
-              🎯 一键生成<span className="text-blue-600">10W+</span>爆款文章
-            </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
-              让你的公众号写作轻松、高效、又吸睛！
-            </p>
-            <div className="max-w-2xl mx-auto mb-8 bg-blue-50 p-4 rounded-lg text-left text-gray-700 space-y-2">
-              <p>📌 覆盖情感 / 职场 / 养生 / 教育等30+领域</p>
-              <p>🧠 基于最新AI大模型，极速生成高质量爆文</p>
-              <p>💡 可读性强、逻辑清晰、风格贴近主流公众号</p>
-              <p>✅ 免费使用，无需注册，复制即发！</p>
-            </div>
-            <Link href="/generate" className="bg-blue-600 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition-transform transform hover:scale-105 text-lg">
-              👉 马上试试，生成属于你的爆款文章！
-            </Link>
+          {/* Right Content (5/6) */}
+          <div className="lg:col-span-5 flex">
+            <Carousel 
+              className="w-full h-full"
+              plugins={[plugin.current]}
+              onMouseEnter={plugin.current.stop}
+              onMouseLeave={plugin.current.reset}
+              opts={{ loop: true }}
+            >
+              <CarouselContent className="h-full">
+                {/* Slide 1: Article Generation */}
+                <CarouselItem className="h-full">
+                  <div className="p-1 h-full">
+                    <Card className="bg-blue-100 border-blue-300 h-full flex flex-col">
+                      <CardContent className="flex flex-col flex-grow items-center justify-center p-6 text-center">
+                        <h2 className="text-4xl font-extrabold mb-4">
+                          🎯 一键生成<span className="text-blue-600">10W+</span>爆款文章
+                        </h2>
+                        <p className="text-lg text-gray-700 mb-6">覆盖情感、职场、教育等30+领域，基于最新AI大模型，极速生成高质量爆文。</p>
+                        <Link href="/generate" className="bg-blue-600 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition-transform transform hover:scale-105 text-lg">
+                          ✍️ 立即开始创作
+                        </Link>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </CarouselItem>
+                {/* Slide 2: Title Generation */}
+                <CarouselItem className="h-full">
+                  <div className="p-1 h-full">
+                    <Card className="bg-green-100 border-green-300 h-full flex flex-col">
+                      <CardContent className="flex flex-col flex-grow items-center justify-center p-6 text-center">
+                        <h2 className="text-4xl font-extrabold mb-4">
+                          🏷️ AI<span className="text-green-600">爆款标题</span>生成器
+                        </h2>
+                        <p className="text-lg text-gray-700 mb-6">输入核心关键词，AI 为您创作5个极具吸引力的爆款标题，引爆阅读量。</p>
+                        <Link href="/title-generator" className="bg-green-600 text-white font-bold py-3 px-8 rounded-full hover:bg-green-700 transition-transform transform hover:scale-105 text-lg">
+                          🚀 生成黄金标题
+                        </Link>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </CarouselItem>
+                {/* Slide 3: Image Generation */}
+                <CarouselItem className="h-full">
+                  <div className="p-1 h-full">
+                    <Card className="bg-purple-100 border-purple-300 h-full flex flex-col">
+                      <CardContent className="flex flex-col flex-grow items-center justify-center p-6 text-center">
+                        <h2 className="text-4xl font-extrabold mb-4">
+                          🖼️ AI<span className="text-purple-600">智能配图</span>
+                        </h2>
+                        <p className="text-lg text-gray-700 mb-6">输入文字描述，选择图片尺寸，即可生成高质量、无版权风险的公众号配图。</p>
+                        <Link href="/image-generator" className="bg-purple-600 text-white font-bold py-3 px-8 rounded-full hover:bg-purple-700 transition-transform transform hover:scale-105 text-lg">
+                          🎨 设计我的图片
+                        </Link>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </CarouselItem>
+              </CarouselContent>
+              <CarouselPrevious className="hidden sm:flex" />
+              <CarouselNext className="hidden sm:flex" />
+            </Carousel>
           </div>
         </div>
       </section>
@@ -93,12 +154,12 @@ export default function HomePage() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-2">🔥 本周最受欢迎模板</h2>
           <div className="mt-10 grid md:grid-cols-3 gap-8 text-left">
-            <TemplateCard icon="💔" title="情感爆文模板" description="爱而不得：如何写出让人心碎的爆款情感文？" />
-            <TemplateCard icon="🧓" title="养生爆文模板" description="60岁后如何科学养生，让身体年轻10岁？" />
-            <TemplateCard icon="🌍" title="热点话题模板" description="某地高考满分作文引发热议，你怎么看？" />
+            <TemplateCard icon="💔" title="情感爆文模板" description="爱而不得：如何写出让人心碎的爆款情感文？" href="/templates/emotion" />
+            <TemplateCard icon="🧓" title="养生爆文模板" description="60岁后如何科学养生，让身体年轻10岁？" href="/templates/health" />
+            <TemplateCard icon="🌍" title="热点话题模板" description="某地高考满分作文引发热议，你怎么看？" href="/templates/trending" />
           </div>
           <div className="mt-12">
-            <Link href="/" className="text-blue-600 font-semibold hover:underline">
+            <Link href="/templates" className="text-blue-600 font-semibold hover:underline">
               查看更多模板 →
             </Link>
           </div>

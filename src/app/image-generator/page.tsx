@@ -28,23 +28,26 @@ export default function ImageGeneratorPage() {
     setError('');
     setGeneratedImageUrl('');
 
-    // 这是一个占位逻辑，稍后会替换为真实的 API 调用
     try {
-      // 模拟 API 调用延迟
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
       const res = await fetch('/api/generate-image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt, size: imageSize })
       });
-
-      const data = await res.json();
       
       if (res.ok) {
+        const data = await res.json();
         setGeneratedImageUrl(data.imageUrl);
       } else {
-        throw new Error(data.error || '图片生成失败，请稍后重试。');
+        let errorMessage = '图片生成失败，请稍后重试。';
+        try {
+          const errorData = await res.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch (e) {
+          // The error response wasn't JSON. Use a generic error.
+          errorMessage = `服务器错误，状态码: ${res.status}`;
+        }
+        throw new Error(errorMessage);
       }
 
     } catch (err) {

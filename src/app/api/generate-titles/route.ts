@@ -35,7 +35,48 @@ export async function POST(req: Request) {
     });
 
     // 尝试解析模型返回的文本为 JSON 数组
-    const titles = JSON.parse(text);
+    let titles;
+    try {
+      // 先尝试清理文本，提取JSON部分
+      let cleanText = text.trim();
+      
+      // 如果文本包含代码块标记，提取其中的内容
+      const jsonMatch = cleanText.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+      if (jsonMatch) {
+        cleanText = jsonMatch[1].trim();
+      }
+      
+      // 尝试解析JSON
+      titles = JSON.parse(cleanText);
+      
+      // 确保返回的是数组
+      if (!Array.isArray(titles)) {
+        throw new Error('返回的不是数组格式');
+      }
+      
+    } catch (parseError) {
+      console.error('JSON解析失败:', parseError);
+      console.error('原始文本:', text);
+      
+      // 如果JSON解析失败，尝试从文本中提取标题
+      const lines = text.split('\n').filter(line => line.trim());
+      titles = lines
+        .filter(line => line.includes('：') || line.includes(':') || line.match(/^\d+[\.\)]/))
+        .map(line => line.replace(/^\d+[\.\)\s]*/, '').replace(/^[：:]\s*/, '').trim())
+        .filter(title => title.length > 0)
+        .slice(0, 5);
+      
+      // 如果还是没有有效标题，返回默认标题
+      if (titles.length === 0) {
+        titles = [
+          `${keywords}的深度解析`,
+          `关于${keywords}，你需要知道的事`,
+          `${keywords}：专家的建议`,
+          `${keywords}完全指南`,
+          `${keywords}背后的真相`
+        ];
+      }
+    }
 
     return NextResponse.json({ titles });
 
