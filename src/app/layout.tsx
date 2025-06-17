@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import Script from "next/script";
 
 const inter = Inter({
   subsets: ["latin", "cyrillic"],
@@ -52,17 +53,27 @@ export default function RootLayout({
     <html lang="zh-CN" className={`${inter.variable}`}>
       <head>
         {/* Google tag (gtag.js) */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-PRTZ0KZK09"></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-PRTZ0KZK09');
-            `,
-          }}
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-PRTZ0KZK09"
         />
+        <Script id="google-analytics">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-PRTZ0KZK09');
+          `}
+        </Script>
+        {/* Plausible Analytics */}
+        <Script
+          defer
+          data-domain="gongzhonghaobaowen.com"
+          src="https://plausible.io/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js"
+        />
+        <Script id="plausible-inline">
+          {`window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`}
+        </Script>
       </head>
       <body className="min-h-screen bg-gray-50 text-gray-800">
         <div className="flex min-h-screen flex-col">
