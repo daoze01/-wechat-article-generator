@@ -74,6 +74,16 @@ export default function RootLayout({
         <Script id="plausible-inline">
           {`window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`}
         </Script>
+        {/* Microsoft Clarity */}
+        <Script id="clarity-analytics">
+          {`
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "s0x5f6sp6o");
+          `}
+        </Script>
       </head>
       <body className="min-h-screen bg-gray-50 text-gray-800">
         <div className="flex min-h-screen flex-col">

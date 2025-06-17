@@ -2,10 +2,9 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { ARTICLE_FIELDS } from '../config/constants';
 
-const domains = [
-  "科技", "健康养生", "情感", "职场", "教育", "财经", "旅游", "美食", "娱乐八卦", "体育"
-];
+const domains = ARTICLE_FIELDS;
 
 export function TitleGenerator() {
   const [domain, setDomain] = useState(domains[0]);
