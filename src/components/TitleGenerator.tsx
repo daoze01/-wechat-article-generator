@@ -7,7 +7,7 @@ import { ARTICLE_FIELDS } from '../config/constants';
 const domains = ARTICLE_FIELDS;
 
 export function TitleGenerator() {
-  const [domain, setDomain] = useState(domains[0]);
+  const [domain, setDomain] = useState<string>(domains[0]);
   const [keywords, setKeywords] = useState('');
   const [titles, setTitles] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
