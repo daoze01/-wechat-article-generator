@@ -38,7 +38,7 @@ export default function AdBanner({
       <ins
         className="adsbygoogle"
         style={style}
-        data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" // 替换为您的AdSense发布商ID
+                  data-ad-client="ca-pub-1334092993035178"
         data-ad-slot={slot}
         data-ad-format={format}
         data-full-width-responsive={responsive.toString()}

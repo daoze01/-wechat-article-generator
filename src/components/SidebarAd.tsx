@@ -35,7 +35,7 @@ export default function SidebarAd({ slot, className = '' }: SidebarAdProps) {
             width: '300px',
             height: '250px'
           }}
-          data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX" // 替换为您的AdSense发布商ID
+          data-ad-client="ca-pub-1334092993035178"
           data-ad-slot={slot}
           data-ad-format="rectangle"
         />
