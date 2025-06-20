@@ -90,6 +90,14 @@ export default function RootLayout({
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1334092993035178"
           crossOrigin="anonymous"
         />
+        <Script id="adsense-config">
+          {`
+            (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-1334092993035178",
+              enable_page_level_ads: true
+            });
+          `}
+        </Script>
       </head>
       <body className="min-h-screen bg-gray-50 text-gray-800">
         <div className="flex min-h-screen flex-col">
