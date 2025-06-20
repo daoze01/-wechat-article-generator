@@ -109,3 +109,23 @@
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-gray-400;
 }
+
+/* AdSense 广告样式 */
+.ad-container {
+  margin: 16px 0;
+  text-align: center;
+}
+
+.ad-container .adsbygoogle {
+  display: block !important;
+  margin: 0 auto;
+}
+
+.sidebar-ad {
+  position: sticky;
+  top: 2rem;
+}
+
+.sidebar-ad .adsbygoogle {
+  display: block !important;
+}

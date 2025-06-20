@@ -1,8 +1,9 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: '关于我们 - AI 内容改写',
-  description: '了解更多关于我们的信息。',
+  title: '关于我们 - 专业AI内容创作服务商 | 公众号爆文网',
+  description: '公众号爆文网是专业的AI内容创作平台，致力于为自媒体创作者提供高效的AI写作工具，包括爆文生成、标题优化、图片生成等服务。',
+  keywords: '关于我们,AI内容创作,公众号爆文网,自媒体工具,AI写作平台,内容创作服务',
 };
 
 const AboutPage = () => {

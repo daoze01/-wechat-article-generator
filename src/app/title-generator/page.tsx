@@ -2,8 +2,9 @@ import { TitleGenerator } from '@/components/TitleGenerator';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: '爆文标题生成器',
-  description: '输入领域和关键词，利用AI生成5个高质量的爆款公众号文章标题。',
+  title: 'AI爆文标题生成器 - 一键生成吸睛10W+标题 | 公众号爆文网',
+  description: '专业的AI爆文标题生成工具，输入关键词即可生成5个高质量爆款标题。提升文章点击率，打造10W+爆文必备工具。',
+  keywords: 'AI标题生成器,爆文标题,公众号标题,10W+标题,文章标题优化,标题党生成器',
 };
 
 export default function TitleGeneratorPage() {

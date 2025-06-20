@@ -12,7 +12,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL('http://localhost:3000'),
-  title: "公众号爆文 - AI文章生成器",
+  title: "AI爆文生成器 | 公众号AI内容创作工具 - 公众号爆文网",
   description: "专业的AI文章生成工具，支持多领域智能创作，快速生成高质量原创文章。适用于公众号、自媒体、博客等内容创作场景。",
   keywords: "公众号爆文,AI写作,文章生成器,公众号写作,自媒体助手,智能写作,内容创作,AI助手",
   authors: [{ name: "智能写作助手" }],
@@ -84,6 +84,12 @@ export default function RootLayout({
             })(window, document, "clarity", "script", "s0x5f6sp6o");
           `}
         </Script>
+        {/* Google AdSense */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX"
+          crossOrigin="anonymous"
+        />
       </head>
       <body className="min-h-screen bg-gray-50 text-gray-800">
         <div className="flex min-h-screen flex-col">
@@ -100,7 +106,9 @@ export default function RootLayout({
                   <Link href="/image-generator" className="text-gray-600 hover:text-blue-600">图片生成</Link>
                   <Link href="/originality-check" className="text-gray-600 hover:text-blue-600">原创检测</Link>
                   <Link href="https://matrix.tencent.com/ai-detect/ai_gen_txt" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-600">AI检测</Link>
+                  <Link href="/tutorials" className="text-gray-600 hover:text-blue-600">使用教程</Link>
                   <Link href="/guestbook" className="text-gray-600 hover:text-blue-600">留言板</Link>
+                  <Link href="/changelog" className="text-gray-600 hover:text-blue-600">更新日志</Link>
                   <Link href="/about" className="text-gray-600 hover:text-blue-600">关于我们</Link>
                 </div>
               </nav>
@@ -116,6 +124,8 @@ export default function RootLayout({
               <div className="flex justify-center space-x-6 mb-4">
                 <Link href="/about" className="hover:text-blue-600">关于我们</Link>
                 <Link href="/contact" className="hover:text-blue-600">联系我们</Link>
+                <Link href="/tutorials" className="hover:text-blue-600">使用教程</Link>
+                <Link href="/changelog" className="hover:text-blue-600">更新日志</Link>
                 <Link href="/privacy" className="hover:text-blue-600">隐私政策</Link>
                 <Link href="/disclaimer" className="hover:text-blue-600">免责声明</Link>
               </div>

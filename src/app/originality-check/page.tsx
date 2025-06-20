@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { LoaderCircle } from 'lucide-react';
+import SidebarAd from '@/components/SidebarAd';
 
 export default function OriginalityCheckerPage() {
   const [input, setInput] = useState('');
@@ -67,8 +68,11 @@ export default function OriginalityCheckerPage() {
   };
 
   return (
-    <main className="flex flex-col items-center justify-center p-4 md:p-8">
-        <div className="w-full max-w-3xl space-y-6">
+    <main className="p-4 md:p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* 主内容区域 */}
+          <div className="flex-1 max-w-3xl space-y-6">
           <div className="text-center">
             <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">公众号文章原创度检测</h1>
             <p className="mt-3 text-lg text-muted-foreground">
@@ -107,7 +111,16 @@ export default function OriginalityCheckerPage() {
               </CardContent>
             </Card>
           )}
+          </div>
+          
+          {/* 侧边栏广告 */}
+          <div className="w-full lg:w-80 flex-shrink-0">
+            <div className="sticky top-8">
+              <SidebarAd slot="1234567896" />
+            </div>
+          </div>
         </div>
+      </div>
     </main>
   );
 } 

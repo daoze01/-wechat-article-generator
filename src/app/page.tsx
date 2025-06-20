@@ -13,13 +13,13 @@ import Autoplay from "embla-carousel-autoplay";
 import React from 'react';
 
 // Helper component for Feature Cards
-function FeatureCard({ icon, title, description }: { icon: string; title: string; description: string; }) {
+function FeatureCard({ icon, title, description, href }: { icon: string; title: string; description: string; href: string; }) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+    <Link href={href} className="block bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer">
       <div className="text-4xl mb-4">{icon}</div>
-      <h3 className="text-xl font-bold mb-2">{title}</h3>
+      <h3 className="text-xl font-bold mb-2 text-gray-800 hover:text-blue-600 transition-colors">{title}</h3>
       <p className="text-gray-600">{description}</p>
-    </div>
+    </Link>
   );
 }
 
@@ -57,12 +57,13 @@ export default function HomePage() {
           
           {/* Left Sidebar (1/6) */}
           <div className="lg:col-span-1 flex flex-col">
-            <div className="flex-1 flex flex-col justify-between">
-                <SidebarButton href="/title-generator" icon="🏷️" text="爆文题目生成" />
+            <div className="flex-1 flex flex-col justify-between space-y-3">
                 <SidebarButton href="/generate" icon="✍️" text="爆文生成" />
-                <SidebarButton href="/image-generator" icon="🖼️" text="图片生成" />
-                <SidebarButton href="/originality-check" icon="🛡️" text="原创检测" />
+                <SidebarButton href="/title-generator" icon="🏷️" text="爆文标题生成" />
                 <SidebarButton href="https://matrix.tencent.com/ai-detect/ai_gen_txt" icon="🤖" text="AI检测" />
+                <SidebarButton href="/originality-check" icon="🛡️" text="原创检测" />
+                <SidebarButton href="/image-generator" icon="🖼️" text="图片生成" />
+                <SidebarButton href="/tutorials" icon="📚" text="使用教程" />
                 <SidebarButton href="/guestbook" icon="💬" text="留言板" />
             </div>
           </div>
@@ -89,6 +90,7 @@ export default function HomePage() {
                         <Link href="/generate" className="bg-blue-600 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition-transform transform hover:scale-105 text-lg">
                           ✍️ 立即开始创作
                         </Link>
+                        <p className="text-xl font-semibold text-blue-700 mt-8">AI 内容创作工具，助力公众号、自媒体打造高质量爆文</p>
                       </CardContent>
                     </Card>
                   </div>
@@ -133,6 +135,66 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* 使用说明区 */}
+      <section className="bg-gradient-to-r from-indigo-50 to-blue-50 py-20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-7xl mx-auto text-center">
+            <h2 className="text-3xl font-bold mb-12 text-gray-800">📖 如何使用本工具？</h2>
+            <div className="bg-white rounded-2xl shadow-xl p-12 mx-4">
+              <div className="flex flex-col lg:flex-row items-center justify-center space-y-10 lg:space-y-0 lg:space-x-8">
+                {/* 步骤1 */}
+                <div className="flex flex-col items-center text-center w-60">
+                  <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-base mb-4">1</div>
+                  <h3 className="font-semibold text-gray-800 mb-2 whitespace-nowrap text-lg">输入关键词 / 主题</h3>
+                  <p className="text-gray-600 text-base leading-relaxed">输入您想要创作的内容主题或关键词</p>
+                </div>
+                
+                {/* 箭头1 */}
+                <div className="hidden lg:block text-blue-400 text-3xl mx-2">→</div>
+                
+                {/* 步骤2 */}
+                <div className="flex flex-col items-center text-center w-60">
+                  <div className="w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-base mb-4">2</div>
+                  <h3 className="font-semibold text-gray-800 mb-2 whitespace-nowrap text-lg">选择内容风格</h3>
+                  <p className="text-gray-600 text-base leading-relaxed">情感 / 职场 / 教育 / 娱乐 等多种风格可选</p>
+                </div>
+                
+                {/* 箭头2 */}
+                <div className="hidden lg:block text-green-400 text-3xl mx-2">→</div>
+                
+                {/* 步骤3 */}
+                <div className="flex flex-col items-center text-center w-60">
+                  <div className="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold text-base mb-4">3</div>
+                  <h3 className="font-semibold text-gray-800 mb-2 whitespace-nowrap text-lg">点击生成爆文</h3>
+                  <p className="text-gray-600 text-base leading-relaxed">AI 将快速生成高质量爆文内容</p>
+                </div>
+                
+                {/* 箭头3 */}
+                <div className="hidden lg:block text-purple-400 text-3xl mx-2">→</div>
+                
+                {/* 步骤4 */}
+                <div className="flex flex-col items-center text-center w-60">
+                  <div className="w-10 h-10 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold text-base mb-4">4</div>
+                  <h3 className="font-semibold text-gray-800 mb-2 whitespace-nowrap text-lg">质量检测优化</h3>
+                  <p className="text-gray-600 text-base leading-relaxed">可进行原创检测与 AI 检测，提升内容质量</p>
+                </div>
+                
+                {/* 箭头4 */}
+                <div className="hidden lg:block text-orange-400 text-3xl mx-2">→</div>
+                
+                {/* 立即开始创作按钮 */}
+                <div className="flex flex-col items-center text-center w-72">
+                  <Link href="/generate" className="inline-flex items-center bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold py-5 px-12 rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 whitespace-nowrap text-lg shadow-lg">
+                    <span className="mr-3">🚀</span>
+                    立即开始创作
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Feature Cards */}
       <section className="py-20">
         <div className="container mx-auto px-4">
@@ -141,10 +203,10 @@ export default function HomePage() {
             <p className="text-gray-600 mt-2">我们不仅仅是内容生成，更是您的智能创作伙伴</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <FeatureCard icon="🏷️" title="爆款标题工坊" description="输入关键词，AI从海量数据中提炼爆款标题公式，生成5个让用户忍不住点击的黄金标题。" />
-            <FeatureCard icon="✍️" title="全文智能生成" description="选中一个标题，AI将自动围绕核心主题，构建文章框架、填充论据、优化文笔，一气呵成。" />
-            <FeatureCard icon="📚" title="多领域专家模型" description="无论是科技、情感还是养生，我们为不同领域训练专属模型，确保内容深度与专业性。" />
-            <FeatureCard icon="🛠️" title="实用工具矩阵" description="集成了AI内容检测、图片素材（即将上线）等辅助工具，覆盖从构思到发布的完整流程。" />
+            <FeatureCard icon="🏷️" title="爆款标题工坊" description="输入关键词，AI从海量数据中提炼爆款标题公式，生成5个让用户忍不住点击的黄金标题。" href="/title-generator" />
+            <FeatureCard icon="✍️" title="全文智能生成" description="选中一个标题，AI将自动围绕核心主题，构建文章框架、填充论据、优化文笔，一气呵成。" href="/generate" />
+            <FeatureCard icon="📚" title="多领域专家模型" description="无论是科技、情感还是养生，我们为不同领域训练专属模型，确保内容深度与专业性。" href="/generate" />
+            <FeatureCard icon="🛠️" title="实用工具矩阵" description="集成了AI内容检测、图片素材（即将上线）等辅助工具，覆盖从构思到发布的完整流程。" href="/" />
           </div>
         </div>
       </section>

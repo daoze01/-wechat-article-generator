@@ -42,6 +42,7 @@ export const ARTICLE_FIELDS = [
   '搞笑',
   '三农',
   '宠物',
+  '知乎风格',
   '其它'
 ] as const;
 
@@ -66,6 +67,17 @@ export const ARTICLE_TEMPLATES = {
       '优缺点分析',
       '购买建议',
       '互动引导'
+    ]
+  },
+  知乎风格: {
+    title: '知乎深度分析',
+    structure: [
+      '问题背景',
+      '深度分析',
+      '逻辑推理',
+      '案例佐证',
+      '专业观点',
+      '干货总结'
     ]
   },
   科技: {

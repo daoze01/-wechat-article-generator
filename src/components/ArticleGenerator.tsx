@@ -6,6 +6,7 @@ import { ARTICLE_FIELDS } from '../config/constants';
 import { cn } from '../utils/utils';
 import ArticlePreview from './ArticlePreview';
 import { message } from 'antd';
+import AdBanner from './AdBanner';
 
 type ArticleField = typeof ARTICLE_FIELDS[number];
 
@@ -155,6 +156,16 @@ function ArticleGeneratorInternal() {
               ) : '生成文章'}
             </button>
           </form>
+          
+          {/* 广告位 - 按钮下方 */}
+          <div className="mt-6">
+            <AdBanner 
+              slot="1234567890" 
+              className="text-center"
+              style={{ display: 'block', minHeight: '90px' }}
+            />
+          </div>
+          
           {error && (
             <div className="p-4 mt-6 rounded-xl bg-red-50 border border-red-200">
               <p className="text-red-700">{error}</p>
@@ -205,6 +216,16 @@ function ArticleGeneratorInternal() {
               {refLoading ? '分析生成中...' : '分析生成'}
             </button>
           </form>
+          
+          {/* 广告位 - 按钮下方 */}
+          <div className="mt-6">
+            <AdBanner 
+              slot="1234567891" 
+              className="text-center"
+              style={{ display: 'block', minHeight: '90px' }}
+            />
+          </div>
+          
           {refError && (
             <div className="p-4 mt-6 rounded-xl bg-red-50 border border-red-200">
               <p className="text-red-700">{refError}</p>
