@@ -2,8 +2,8 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: '关于我们 - 专业AI内容创作服务商 | 公众号爆文网',
-  description: '公众号爆文网是专业的AI内容创作平台，致力于为自媒体创作者提供高效的AI写作工具，包括爆文生成、标题优化、图片生成等服务。',
-  keywords: '关于我们,AI内容创作,公众号爆文网,自媒体工具,AI写作平台,内容创作服务',
+  description: '公众号爆文网是专业的AI内容创作平台，致力于为自媒体创作者提供高效的AI爆文生成器、AI改写器、AI检测工具、原创检测工具、AI图片生成工具等服务。',
+  keywords: '关于我们,AI爆文生成器,公众号爆文网,自媒体工具,AI写作平台,内容创作服务,AI检测工具,原创检测,AI图片生成',
 };
 
 const AboutPage = () => {
@@ -15,7 +15,7 @@ const AboutPage = () => {
             关于我们
           </h1>
           <p className="mt-5 max-w-xl mx-auto text-xl text-gray-500">
-            欢迎来到 AI 内容改写工具。我们的目标是帮助您优化和重写您的内容，使其更具吸引力、更清晰、更符合您的风格要求。
+            公众号爆文网（https://www.gongzhonghaobaowen.com/）是一个专注于AI内容创作的工具平台，致力于为自媒体创作者、公众号运营者、内容创作者提供高效的AI爆文生成器、AI内容改写器、AI检测工具、原创检测工具、AI图片生成工具等服务，帮助用户提升创作效率、优化内容质量，打造高阅读量、高传播度的精品内容。
           </p>
         </div>
 
@@ -23,10 +23,10 @@ const AboutPage = () => {
           <div className="lg:text-center">
             <h2 className="text-base text-indigo-600 font-semibold tracking-wide uppercase">我们的使命</h2>
             <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-              让人人都能轻松创作高质量内容
+              通过AI技术赋能内容创作，助力创作者轻松打造10W+爆款内容
             </p>
             <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-              我们相信，写作不应该是一件困难的事情。通过先进的 AI 技术，我们致力于为您提供强大而易于使用的工具，激发您的创作灵感，提升内容质量。
+              我们的目标是通过领先的AI技术，赋能内容创作，助力创作者轻松打造10W+爆款内容。
             </p>
           </div>
 
@@ -34,40 +34,46 @@ const AboutPage = () => {
             <dl className="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10">
               <div className="relative">
                 <dt>
-                  <p className="text-lg leading-6 font-medium text-gray-900">智能改写</p>
+                  <p className="text-lg leading-6 font-medium text-gray-900">AI爆文生成器</p>
                 </dt>
                 <dd className="mt-2 text-base text-gray-500">
-                  我们的 AI 模型能够理解上下文，并根据您的要求（如"小红书风格"、"知乎风格"等）生成高质量的改写版本。
+                  基于先进的AI大模型技术，根据关键词或主题快速生成高质量爆文内容，为自媒体创作者提供创作灵感和效率提升。
                 </dd>
               </div>
 
               <div className="relative">
                 <dt>
-                  <p className="text-lg leading-6 font-medium text-gray-900">内容分析</p>
+                  <p className="text-lg leading-6 font-medium text-gray-900">AI内容改写器</p>
                 </dt>
                 <dd className="mt-2 text-base text-gray-500">
-                  我们不仅改写内容，还会分析原文，提取关键信息，确保改写后的内容保留核心思想。
+                  智能分析文章内容，支持多种写作风格（如小红书风格、知乎风格等），一键生成高质量改写版本。
                 </dd>
               </div>
 
               <div className="relative">
                 <dt>
-                  <p className="text-lg leading-6 font-medium text-gray-900">简单易用</p>
+                  <p className="text-lg leading-6 font-medium text-gray-900">AI检测与原创检测</p>
                 </dt>
                 <dd className="mt-2 text-base text-gray-500">
-                  只需粘贴您的文章链接或文本，选择您想要的风格，即可一键生成。无需复杂的操作。
+                  提供AI内容检测和原创性检测服务，帮助创作者确保内容质量和原创性，规避风险。
                 </dd>
               </div>
 
               <div className="relative">
                 <dt>
-                  <p className="text-lg leading-6 font-medium text-gray-900">持续进化</p>
+                  <p className="text-lg leading-6 font-medium text-gray-900">AI图片生成工具</p>
                 </dt>
                 <dd className="mt-2 text-base text-gray-500">
-                  我们的团队在不断地优化算法和模型，致力于为您提供越来越好的服务。
+                  基于文字描述智能生成配图，为内容创作提供丰富的视觉元素支持，提升内容吸引力。
                 </dd>
               </div>
             </dl>
+          </div>
+
+          <div className="mt-16 text-center">
+            <p className="text-base text-gray-500">
+              如有任何建议或合作意向，欢迎联系邮箱（support@gongzhonghaobaowen.com）。
+            </p>
           </div>
         </div>
       </div>
