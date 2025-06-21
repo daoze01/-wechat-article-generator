@@ -82,7 +82,7 @@ const PrivacyPolicyPage = () => {
 
           <h2>9. 联系方式</h2>
           <p>
-            如您对本隐私政策有任何疑问，欢迎通过邮箱（support@gongzhonghaobaowen.com）与我们联系。
+            如您对本隐私政策有任何疑问，欢迎通过邮箱（contact@gongzhonghaobaowen.com）与我们联系。
           </p>
         </div>
       </div>

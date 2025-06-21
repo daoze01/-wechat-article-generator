@@ -14,8 +14,8 @@ export default function ContactPage() {
         </p>
         <p>
           <strong>联系邮箱：</strong>
-          <a href="mailto:support@gongzhonghaobaowen.com" className="text-blue-600 hover:underline">
-            support@gongzhonghaobaowen.com
+                      <a href="mailto:contact@gongzhonghaobaowen.com" className="text-blue-600 hover:underline">
+              contact@gongzhonghaobaowen.com
           </a>
         </p>
         <p className="mt-6">

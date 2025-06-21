@@ -72,7 +72,7 @@ const AboutPage = () => {
 
           <div className="mt-16 text-center">
             <p className="text-base text-gray-500">
-              如有任何建议或合作意向，欢迎联系邮箱（support@gongzhonghaobaowen.com）。
+              如有任何建议或合作意向，欢迎联系邮箱（contact@gongzhonghaobaowen.com）。
             </p>
           </div>
         </div>

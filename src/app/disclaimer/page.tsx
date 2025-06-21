@@ -58,7 +58,7 @@ export default function DisclaimerPage() {
         </p>
 
         <div className="mt-8 text-sm text-gray-600">
-          <p>如有疑问，请联系：support@gongzhonghaobaowen.com</p>
+          <p>如有疑问，请联系：contact@gongzhonghaobaowen.com</p>
         </div>
       </div>
     </div>

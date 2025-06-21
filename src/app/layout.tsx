@@ -139,8 +139,8 @@ export default function RootLayout({
               </div>
               <p className="mb-2">
                 📧 联系邮箱：
-                <a href="mailto:support@gongzhonghaobaowen.com" className="hover:text-blue-600">
-                  support@gongzhonghaobaowen.com
+                <a href="mailto:contact@gongzhonghaobaowen.com" className="hover:text-blue-600">
+                  contact@gongzhonghaobaowen.com
                 </a>
               </p>
               <p className="text-sm">
